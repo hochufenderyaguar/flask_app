@@ -5,15 +5,11 @@ from wtforms.fields.html5 import EmailField
 
 
 class RegisterForm(FlaskForm):
-    email = EmailField('Login/email', validators=[DataRequired()])
-    password = PasswordField('password', validators=[DataRequired()])
-    repeat_password = PasswordField('repeat password', validators=[DataRequired()])
-    surname = StringField('surname', validators=[DataRequired()])
-    name = StringField('name', validators=[DataRequired()])
-    age = IntegerField('age', validators=[DataRequired()])
-    position = StringField('position', validators=[DataRequired()])
-    speciality = StringField('speciality', validators=[DataRequired()])
-    address = StringField('address', validators=[DataRequired()])
+    email = EmailField('Почта', validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    repeat_password = PasswordField('Повторите пароль', validators=[DataRequired()])
+    surname = StringField('Фамилия', validators=[DataRequired()])
+    name = StringField('Имя', validators=[DataRequired()])
     submit = SubmitField('submit')
 
 
