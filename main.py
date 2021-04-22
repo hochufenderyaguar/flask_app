@@ -1,4 +1,6 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request
+from werkzeug.exceptions import abort
+
 from data import db_session
 from data.users import User
 from data.products import Product
@@ -74,7 +76,7 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/add_product')
+@app.route('/add_product', methods=['GET', 'POST'])
 def add_product():
     form = ProductsForm()
     if form.validate_on_submit():
@@ -90,9 +92,35 @@ def add_product():
                            form=form)
 
 
-@app.route('/edit_product')
-def edit_product():
-    return render_template('edit_product.html')
+@app.route('/edit_product/<int:id>', methods=['GET', 'POST'])
+def edit_product(id):
+    form = ProductsForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        product = db_sess.query(Product).filter(Product.id == id,
+                                                Product.user == current_user
+                                                ).first()
+        if product:
+            form.product.data = product.product
+            form.price.data = product.price
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        product = db_sess.query(Product).filter(Product.id == id,
+                                                Product.user == current_user
+                                                ).first()
+        if product:
+            product.product = form.product.data
+            product.price = form.price.data
+            db_sess.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template('edit_product.html',
+                           title='Редактирование цены товара',
+                           form=form
+                           )
 
 
 @app.route('/logout')
