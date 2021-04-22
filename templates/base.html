@@ -2,9 +2,11 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
     <title>Document</title>
 </head>
 <body>
@@ -14,8 +16,8 @@
          <a class="btn btn-outline-primary" href="#">Имя пользователя</a>
         {% else %}
         <div class="main-navbar__section main-navbar__section_right">
-            <a class="btn btn-outline-primary" id="login" href="#">Вход</a>
-            <a class="btn btn-outline-primary" id="login" href="#">Регистрация</a>
+            <a class="btn btn-outline-primary" href="/login">Вход</a>
+            <a class="btn btn-outline-primary" id="login" href="/join">Регистрация</a>
         </div>
         {% endif %}
     </div>
@@ -24,4 +26,3 @@
 
 </body>
 </html>
-
