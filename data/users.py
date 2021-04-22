@@ -14,7 +14,7 @@ class User(SqlAlchemyBase, UserMixin):
     surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    products = orm.relation("Products", back_populates='user')
+    products = orm.relation("Product", back_populates='user')
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

@@ -4,6 +4,7 @@ from data.users import User
 from data.products import Product
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from forms.user import RegisterForm, LoginForm
+from forms.products import ProductsForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -17,7 +18,7 @@ login_manager.init_app(app)
 def join():
     form = RegisterForm()
     if form.validate_on_submit():
-        if form.password.data != form.password_again.data:
+        if form.password.data != form.repeat_password.data:
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Пароли не совпадают")
@@ -39,7 +40,7 @@ def join():
 
 
 # вход
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -47,7 +48,7 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect("/")
+            return redirect("/index")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
@@ -62,7 +63,7 @@ def index():
     return render_template('index.html', products=products)
 
 
-@app.route('/base')
+@app.route('/')
 def base():
     return render_template('base.html')
 
@@ -75,12 +76,30 @@ def load_user(user_id):
 
 @app.route('/add_product')
 def add_product():
-    return render_template('add_product.html')
+    form = ProductsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        product = Product()
+        product.product = form.product.data
+        product.price = form.price.data
+        current_user.products.append(product)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('add_product.html', title='Добавление товара',
+                           form=form)
 
 
 @app.route('/edit_product')
 def edit_product():
     return render_template('edit_product.html')
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 if __name__ == '__main__':
