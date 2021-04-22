@@ -73,6 +73,16 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
+@app.route('/add_product')
+def add_product():
+    return render_template('add_product.html')
+
+
+@app.route('/edit_product')
+def add_product():
+    return render_template('edit_product.html')
+
+
 if __name__ == '__main__':
     db_session.global_init("db/monitor.db")
     app.run(port=8080, host='127.0.0.1')
