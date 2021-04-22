@@ -62,7 +62,7 @@ def index():
     return render_template('index.html', products=products)
 
 
-@app.route('/')
+@app.route('/base')
 def base():
     return render_template('base.html')
 
@@ -71,16 +71,6 @@ def base():
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
-
-
-@app.route('/add_product')
-def add_product():
-    return render_template('add_product.html')
-
-
-@app.route('/edit_product')
-def edit_product():
-    return render_template('edit_product.html')
 
 
 if __name__ == '__main__':
