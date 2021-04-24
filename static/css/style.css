@@ -24,3 +24,13 @@ body {
     font-weight: 400;
     line-height: 1.5;
 }
+
+.auto-form {
+    width: 30 em;
+    margin: 2 em auto;
+}
+
+.roundbox {
+    border: 1px solid #b9b9b9;
+    position: relative;
+}
