@@ -11,6 +11,8 @@ chat_id = None
 def start(update, context):
     global chat_id
     chat_id = update.message.chat_id
+    update.message.reply_text(
+        "Спасибо за регистрацию, теперь можете переходить в свой личный кабинет на сайте, чтобы добавить товары.")
 
 
 def send_message():

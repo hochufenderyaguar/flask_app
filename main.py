@@ -45,7 +45,8 @@ def join():
 
 @app.route('/get_id')
 def get_id():
-    return redirect('/login')
+    return redirect('https://t.me/asdxjkl_bot?start=666')
+    # return redirect('/login')
 
 
 # вход
