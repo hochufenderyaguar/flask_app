@@ -3,6 +3,7 @@
 {% block content %}
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
         <h1 class="display-4" text-align="center">Мои товары</h1>
+        <a href="/add_product" class="btn btn-secondary">Добавить товар</a>
     </div>
     <div class="container">
         {% for item in products%}
@@ -12,8 +13,8 @@
                     <h4 class="my-0 font-weight-normal">{{ item.product }}</h4>
                     </div>
                     <div class="card-body">
-                    <input type="button" name="nubex" href="/add_product" value="Добавить"/>
-                    <input type="button" name="nubex" href="/edit_product" value="Редактировать"/>
+                    <a href="/edit_product" class="btn btn-secondary">Редактировать</a>
+                        <a href="/delete_product" class="btn btn-secondary">Удалить</a>
                     </div>
                 </div>
                 <div class="card mb-4 shadow-sm">

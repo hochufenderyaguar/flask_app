@@ -1,23 +1,3 @@
-# from threading import Thread
-#
-# import schedule
-#
-#
-# def somecode():
-#     pass
-#
-#
-# def cache():
-#     schedule.every().day.at("10:00").do(check_price)
-#     while True:
-#         schedule.run_pending()
-#
-#
-# if __name__ == '__main__':
-#     thread = Thread(target=cache)
-#     thread.start()
-import random
-
 import schedule
 from telegram import Bot
 from telegram.ext import Updater, CommandHandler

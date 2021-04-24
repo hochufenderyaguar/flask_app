@@ -1,6 +1,8 @@
+from threading import Thread
+from ebaysdk.finding import Connection as finding
+import schedule
 from flask import Flask, render_template, redirect, request
 from werkzeug.exceptions import abort
-
 from data import db_session
 from data.users import User
 from data.products import Product
@@ -77,6 +79,7 @@ def load_user(user_id):
 
 
 @app.route('/add_product', methods=['GET', 'POST'])
+@login_required
 def add_product():
     form = ProductsForm()
     if form.validate_on_submit():
@@ -87,12 +90,13 @@ def add_product():
         current_user.products.append(product)
         db_sess.merge(current_user)
         db_sess.commit()
-        return redirect('/')
+        return redirect('/index')
     return render_template('add_product.html', title='Добавление товара',
                            form=form)
 
 
 @app.route('/edit_product/<int:id>', methods=['GET', 'POST'])
+@login_required
 def edit_product(id):
     form = ProductsForm()
     if request.method == "GET":
@@ -129,6 +133,38 @@ def logout():
     logout_user()
     return redirect("/")
 
+
+def find_product_price(keywords):
+    api = finding(appid='', config_file=None)
+    api_request = {'keywords': keywords,
+                   'outputSelector': 'UnitPriceInfo'
+                   }
+    response = api.execute('findItemsByKeywords', api_request)
+    items = response.dict()["searchResult"]["item"]
+    return items
+
+
+def check_price():
+    db_sess = db_session.create_session()
+    for user in db_sess.query(User).all():
+        for product in user.products:
+            user_price = int(product.price)
+            items = find_product_price(product.product)
+            for item in items:
+                if int(item["sellingStatus"]["currentPrice"]["value"]) <= user_price:
+                    print(item["viewItemURL"])
+                    break
+
+
+def cache():
+    schedule.every().day.at("10:00").do(check_price)
+
+    while True:
+        schedule.run_pending()
+
+
+thread = Thread(target=cache)
+thread.start()
 
 if __name__ == '__main__':
     db_session.global_init("db/monitor.db")
