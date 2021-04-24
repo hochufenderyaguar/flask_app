@@ -73,10 +73,10 @@ def index():
 
 
 @app.route('/')
-def base():
+def main():
     if current_user.is_authenticated:
         return redirect('/index')
-    return render_template('base.html')
+    return render_template('text.html')
 
 
 @login_manager.user_loader
