@@ -2,13 +2,27 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <title>Магазин</title>
 </head>
 <body>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <h5 class="my-0 mr-md-auto font-weight-normal">Магазин</h5>
+         <a class="btn btn-outline-primary" href="/logout">Ким Кирилл</a>
+    </div>
 
+    <h1 text-align="center">Редактирование</h1>
+    <form action="" method="post">
+        <input id="csrf_token" name="csrf_token" type="hidden" value="IjFiNTBkOTA0NDI2NzBhMDQ4NWJhODQ5OWRmOWY0OWE4YmNlZjA1NTMi.YIQTiQ.iX5mJ5XkUm9Y3ZoPdQ1pwbIdtU4">
+        <p>
+            <label for="price">Цена</label><br>
+            <input class="form-control" id="price" name="price" required="" type="text" value=""><br>
+        </p>
+        <p><input class="btn btn-primary" id="submit" name="submit" type="submit" value="Изменить"></p>
+    </form>
 
 </body>
 </html>
