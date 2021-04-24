@@ -4,7 +4,12 @@ from wtforms.validators import DataRequired
 from wtforms import SubmitField
 
 
-class ProductsForm(FlaskForm):
+class ProductsAddForm(FlaskForm):
     product = StringField('Товар', validators=[DataRequired()])
     price = IntegerField('Цена', validators=[DataRequired()])
     submit = SubmitField('Добавить')
+
+
+class ProductsEditForm(FlaskForm):
+    price = IntegerField('Цена', validators=[DataRequired()])
+    submit = SubmitField('Изменить')

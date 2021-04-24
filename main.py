@@ -8,7 +8,7 @@ from data.users import User
 from data.products import Product
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from forms.user import RegisterForm, LoginForm
-from forms.products import ProductsForm
+from forms.products import ProductsAddForm, ProductsEditForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -39,8 +39,13 @@ def join():
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/login')
+        return redirect('/get_id')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route('/get_id')
+def get_id():
+    return redirect('/login')
 
 
 # вход
@@ -69,6 +74,8 @@ def index():
 
 @app.route('/')
 def base():
+    if current_user.is_authenticated:
+        return redirect('/index')
     return render_template('base.html')
 
 
@@ -81,7 +88,7 @@ def load_user(user_id):
 @app.route('/add_product', methods=['GET', 'POST'])
 @login_required
 def add_product():
-    form = ProductsForm()
+    form = ProductsAddForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         product = Product()
@@ -98,14 +105,13 @@ def add_product():
 @app.route('/edit_product/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_product(id):
-    form = ProductsForm()
+    form = ProductsEditForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
         product = db_sess.query(Product).filter(Product.id == id,
                                                 Product.user == current_user
                                                 ).first()
         if product:
-            form.product.data = product.product
             form.price.data = product.price
         else:
             abort(404)
@@ -115,7 +121,6 @@ def edit_product(id):
                                                 Product.user == current_user
                                                 ).first()
         if product:
-            product.product = form.product.data
             product.price = form.price.data
             db_sess.commit()
             return redirect('/')
