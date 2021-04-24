@@ -14,6 +14,8 @@ class User(SqlAlchemyBase, UserMixin):
     surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    key = sqlalchemy.Column(sqlalchemy.String)
+    chat_id = sqlalchemy.Column(sqlalchemy.String)
     products = orm.relation("Product", back_populates='user')
 
     def set_password(self, password):
@@ -21,3 +23,9 @@ class User(SqlAlchemyBase, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.hashed_password, password)
+
+    def set_key(self, key):
+        self.key = generate_password_hash(key)
+
+    def check_key(self, key):
+        return check_password_hash(self.key, key)

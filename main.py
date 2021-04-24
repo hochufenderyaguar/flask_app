@@ -9,6 +9,8 @@ from data.products import Product
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from forms.user import RegisterForm, LoginForm
 from forms.products import ProductsAddForm, ProductsEditForm
+from telegram import Bot
+from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -45,7 +47,7 @@ def join():
 
 @app.route('/get_id')
 def get_id():
-    return redirect('https://t.me/asdxjkl_bot?start=666')
+    return redirect('https://t.me/monitor_ebay_bot?start=666')
     # return redirect('/login')
 
 
@@ -56,7 +58,7 @@ def login():
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
-        if user and user.check_password(form.password.data):
+        if user and user.check_password(form.password.data) and user.check_key(form.key.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/index")
         return render_template('login.html',
@@ -166,6 +168,7 @@ def find_product_price(keywords):
 
 
 def check_price():
+    global bot
     db_sess = db_session.create_session()
     for user in db_sess.query(User).all():
         for product in user.products:
@@ -173,15 +176,74 @@ def check_price():
             items = find_product_price(product.product)
             for item in items:
                 if int(item["sellingStatus"]["currentPrice"]["value"]) <= user_price:
-                    print(item["viewItemURL"])
+                    bot.send_message(chat_id=user.chat_id,
+                                     text=f'Цена на товар {product.product} уменьшилась - {item["viewItemURL"]}')
+                    # print(item["viewItemURL"])
                     break
 
 
+def start(update, context):
+    update.message.reply_text("Введите свою почту")
+    return 1
+
+
+def first_response(update, context):
+    email = update.message.text
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.email == email).first()
+    if not user:
+        update.message.reply_text("Такой почты нет")
+        update.message.reply_text("Введите свою почту")
+        return 1
+    context.user_data["email"] = email
+    chat_id = update.message.chat_id
+    user.chat_id = chat_id
+    db_sess.commit()
+    update.message.reply_text("Придумайте ключ, состоящий из 5 символов, он нужен для авторизации")
+    return 2
+
+
+def second_response(update, context):
+    key = update.message.text
+    if len(key) != 5:
+        update.message.reply_text("Придумайте ключ, состоящий из 5 символов, он нужен для авторизации")
+        return 2
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.email == context.user_data["email"]).first()
+    user.set_key(key)
+    db_sess.commit()
+    update.message.reply_text(
+        "Спасибо за регистрацию, теперь можете переходить в свой личный кабинет на сайте, чтобы добавить товары.")
+    return ConversationHandler.END
+
+
 def cache():
+    global bot
+    TOKEN = ''
+    bot = Bot(TOKEN)
+    updater = Updater(TOKEN, use_context=True)
+    dp = updater.dispatcher
+
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler('start', start)],
+
+        states={
+            1: [MessageHandler(Filters.text, first_response, pass_user_data=True)],
+
+            2: [MessageHandler(Filters.text, second_response, pass_user_data=True)]
+        },
+
+        fallbacks=[CommandHandler('stop', start)]
+    )
+
+    dp.add_handler(conv_handler)
+    updater.start_polling()
+
     schedule.every().day.at("10:00").do(check_price)
 
     while True:
         schedule.run_pending()
+    updater.idle()
 
 
 thread = Thread(target=cache)
