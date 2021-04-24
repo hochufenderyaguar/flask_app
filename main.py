@@ -127,6 +127,21 @@ def edit_product(id):
                            )
 
 
+@app.route('/delete_product/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_product(id):
+    db_sess = db_session.create_session()
+    product = db_sess.query(Product).filter(Product.id == id,
+                                            Product.user == current_user
+                                            ).first()
+    if product:
+        db_sess.delete(product)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
 @app.route('/logout')
 @login_required
 def logout():

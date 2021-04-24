@@ -13,8 +13,8 @@
                     <h4 class="my-0 font-weight-normal">{{ item.product }}</h4>
                     </div>
                     <div class="card-body">
-                    <a href="/edit_product" class="btn btn-secondary">Редактировать</a>
-                        <a href="/delete_product" class="btn btn-secondary">Удалить</a>
+                    <a href="/edit_product/{{ item.id }}" class="btn btn-secondary">Редактировать</a>
+                    <a href="/delete_product/{{ item.id }}" class="btn btn-secondary">Удалить</a>
                     </div>
                 </div>
                 <div class="card mb-4 shadow-sm">
@@ -28,5 +28,4 @@
             </div>
         {% endfor %}
     </div>
-    <small>Как-то так</small>
 {% endblock %}
