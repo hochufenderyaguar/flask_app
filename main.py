@@ -159,7 +159,7 @@ def logout():
 
 
 def find_product_price(keywords):
-    api = finding(appid='SonyaKab-monitor-PRD-ccbb21c50-64e01dcd', config_file=None)
+    api = finding(appid='', config_file=None)
     api_request = {'keywords': keywords,
                    'outputSelector': 'UnitPriceInfo'
                    }
@@ -219,7 +219,7 @@ def second_response(update, context):
 
 def cache():
     global bot
-    TOKEN = '1780578894:AAFgO9fk5698dwcQWEgAwDpITo8RX8H8mrI'
+    TOKEN = ''
     bot = Bot(TOKEN)
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
@@ -250,6 +250,6 @@ thread = Thread(target=cache)
 thread.start()
 
 if __name__ == '__main__':
-    db_session.global_init("monitor.db")
+    db_session.global_init("db/monitor.db")
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
