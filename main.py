@@ -11,6 +11,7 @@ from forms.user import RegisterForm, LoginForm
 from forms.products import ProductsAddForm, ProductsEditForm
 from telegram import Bot
 from telegram.ext import Updater, CommandHandler, ConversationHandler, MessageHandler, Filters
+from waitress import serve
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
@@ -250,4 +251,5 @@ thread.start()
 
 if __name__ == '__main__':
     db_session.global_init("db/monitor.db")
-    app.run(port=8080, host='127.0.0.1')
+    # app.run(port=8080, host='127.0.0.1')
+    serve(app, host='127.0.0.1', port=8080)
