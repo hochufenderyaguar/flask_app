@@ -46,10 +46,10 @@ def join():
     return render_template('register.html', title='Регистрация', form=form)
 
 
+# ссылка на бота
 @app.route('/get_id')
 def get_id():
     return redirect('https://t.me/monitor_ebay_bot?start=666')
-    # return redirect('/login')
 
 
 # вход
@@ -76,6 +76,7 @@ def index():
     return render_template('index.html', products=products)
 
 
+# главная страница
 @app.route('/')
 def main():
     if current_user.is_authenticated:
@@ -89,6 +90,7 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
+# добавление товара
 @app.route('/add_product', methods=['GET', 'POST'])
 @login_required
 def add_product():
@@ -106,6 +108,7 @@ def add_product():
                            form=form)
 
 
+# редактирование товара
 @app.route('/edit_product/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_product(id):
@@ -136,6 +139,7 @@ def edit_product(id):
                            )
 
 
+# удаление товара
 @app.route('/delete_product/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_product(id):
@@ -151,6 +155,7 @@ def delete_product(id):
     return redirect('/')
 
 
+# выход из аккаунта
 @app.route('/logout')
 @login_required
 def logout():
@@ -158,6 +163,7 @@ def logout():
     return redirect("/")
 
 
+# находит товары по названию на ebay и возвращает их
 def find_product_price(keywords):
     api = finding(appid='', config_file=None)
     api_request = {'keywords': keywords,
@@ -168,6 +174,8 @@ def find_product_price(keywords):
     return items
 
 
+# проверяет для всех пользователей, изменилась ли цена на товары и, если стала меньше или равной заданной пользователем,
+# то сообщает ему об этом и дает ссылку на продавца
 def check_price():
     global bot
     db_sess = db_session.create_session()
@@ -251,5 +259,4 @@ thread.start()
 
 if __name__ == '__main__':
     db_session.global_init("db/monitor.db")
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='127.0.0.1', port=8080)
