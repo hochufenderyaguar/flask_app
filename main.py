@@ -172,13 +172,12 @@ def check_price():
     db_sess = db_session.create_session()
     for user in db_sess.query(User).all():
         for product in user.products:
-            user_price = int(product.price)
+            user_price = float(product.price)
             items = find_product_price(product.product)
             for item in items:
-                if int(item["sellingStatus"]["currentPrice"]["value"]) <= user_price:
+                if float(item["sellingStatus"]["currentPrice"]["value"]) <= user_price:
                     bot.send_message(chat_id=user.chat_id,
                                      text=f'Цена на товар {product.product} уменьшилась - {item["viewItemURL"]}')
-                    # print(item["viewItemURL"])
                     break
 
 
