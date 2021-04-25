@@ -250,6 +250,6 @@ thread = Thread(target=cache)
 thread.start()
 
 if __name__ == '__main__':
-    db_session.global_init("db/monitor.db")
+    db_session.global_init("monitor.db")
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
