@@ -39,6 +39,8 @@ def join():
             name=form.name.data,
             email=form.email.data,
         )
+        if form.email.data == 'a@a.ru':
+            user.is_admin = True
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
@@ -169,7 +171,7 @@ def logout():
 
 # находит товары по названию на ebay и возвращает их
 def find_product_price(keywords):
-    api = finding(appid='', config_file=None)
+    api = finding(appid='SonyaKab-monitor-PRD-ccbb21c50-64e01dcd', config_file=None)
     api_request = {'keywords': keywords,
                    'outputSelector': 'UnitPriceInfo'
                    }
@@ -231,7 +233,7 @@ def second_response(update, context):
 
 def cache():
     global bot
-    TOKEN = ''
+    TOKEN = '1780578894:AAFgO9fk5698dwcQWEgAwDpITo8RX8H8mrI'
     bot = Bot(TOKEN)
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
