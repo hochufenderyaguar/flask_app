@@ -73,9 +73,9 @@ def login():
 # страничка для пользователей
 @app.route('/index')
 def index():
-    if current_user.is_admin:
-        return render_template('users.html')
     db_sess = db_session.create_session()
+    if current_user.is_admin:
+        return render_template('users.html', users=db_sess.query(User))
     products = db_sess.query(Product).filter(Product.user_id == current_user.id)
     return render_template('index.html', products=products)
 
@@ -85,7 +85,8 @@ def index():
 def main():
     if current_user.is_authenticated:
         if current_user.is_admin:
-            return render_template('users.html')
+            db_sess = db_session.create_session()
+            return render_template('users.html', users=db_sess.query(User))
         return redirect('/index')
     return render_template('text.html')
 
@@ -155,6 +156,19 @@ def delete_product(id):
                                             ).first()
     if product:
         db_sess.delete(product)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
+@app.route('/delete_user/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_user(id):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == id).first()
+    if user:
+        db_sess.delete(user)
         db_sess.commit()
     else:
         abort(404)
@@ -231,6 +245,25 @@ def second_response(update, context):
     return ConversationHandler.END
 
 
+def forgot_password(update, context):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.chat_id == update.message.chat_id).first()
+    if user:
+        update.message.reply_text('Введите новый пароль')
+        return 1
+    return ConversationHandler.END
+
+
+def password_response(update, context):
+    password = update.message.text
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.chat_id == update.message.chat_id).first()
+    user.set_password(password)
+    db_sess.commit()
+    update.message.reply_text('Вы поменяли пароль')
+    return ConversationHandler.END
+
+
 def cache():
     global bot
     TOKEN = ''
@@ -250,6 +283,16 @@ def cache():
         fallbacks=[CommandHandler('stop', start)]
     )
 
+    password_conv_handler = ConversationHandler(
+        entry_points=[CommandHandler('forgot_password', forgot_password)],
+
+        states={
+            1: [MessageHandler(Filters.text, password_response, pass_user_data=True)]
+        },
+
+        fallbacks=[CommandHandler('stop', forgot_password)]
+    )
+    dp.add_handler(password_conv_handler)
     dp.add_handler(conv_handler)
     updater.start_polling()
 

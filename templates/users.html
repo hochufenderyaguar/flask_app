@@ -12,6 +12,9 @@
     <tr>
         <td>{{ user.name }}</td>
         <td>{{ user.email }}</td>
+        {% if current_user.id != user.id %}
+        <td><a href="/delete_user/{{ user.id }}" class="btn btn-secondary">Удалить</a></td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
