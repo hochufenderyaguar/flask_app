@@ -1,11 +1,11 @@
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, PasswordField, StringField, IntegerField, BooleanField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email
 from wtforms.fields.html5 import EmailField
 
 
 class RegisterForm(FlaskForm):
-    email = EmailField('Почта', validators=[DataRequired()])
+    email = EmailField('Почта', validators=[DataRequired(), Email()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     repeat_password = PasswordField('Повторите пароль', validators=[DataRequired()])
     surname = StringField('Фамилия', validators=[DataRequired()])

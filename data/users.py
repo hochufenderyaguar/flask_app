@@ -16,6 +16,7 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     key = sqlalchemy.Column(sqlalchemy.String)
     chat_id = sqlalchemy.Column(sqlalchemy.String)
+    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     products = orm.relation("Product", back_populates='user')
 
     def set_password(self, password):

@@ -71,6 +71,8 @@ def login():
 # страничка для пользователей
 @app.route('/index')
 def index():
+    if current_user.is_admin:
+        return render_template('users.html')
     db_sess = db_session.create_session()
     products = db_sess.query(Product).filter(Product.user_id == current_user.id)
     return render_template('index.html', products=products)
@@ -80,6 +82,8 @@ def index():
 @app.route('/')
 def main():
     if current_user.is_authenticated:
+        if current_user.is_admin:
+            return render_template('users.html')
         return redirect('/index')
     return render_template('text.html')
 
